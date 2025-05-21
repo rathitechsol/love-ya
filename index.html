@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forever Yours ❤️</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #ff6b6b;
@@ -14,13 +15,14 @@
 
         body {
             margin: 0;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
             font-family: 'Pacifico', cursive;
             overflow: hidden;
+            position: relative;
         }
 
         .container {
@@ -32,6 +34,8 @@
             backdrop-filter: blur(10px);
             transform: scale(0.95);
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
         }
 
         h1 {
@@ -46,6 +50,7 @@
             display: flex;
             gap: 1rem;
             justify-content: center;
+            min-height: 60px;
         }
 
         .btn {
@@ -57,6 +62,7 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
+            min-width: 100px;
         }
 
         #yesBtn {
@@ -74,6 +80,7 @@
             background: var(--accent);
             color: white;
             transition: all 0.1s ease;
+            position: absolute;
         }
 
         .result {
@@ -85,10 +92,12 @@
         }
 
         .particles {
-            position: absolute;
+            position: fixed;
             width: 100%;
             height: 100%;
             pointer-events: none;
+            top: 0;
+            left: 0;
         }
 
         @keyframes float {
@@ -97,9 +106,10 @@
         }
 
         .heart {
-            position: absolute;
+            position: fixed;
             animation: hearts 3s linear infinite;
             opacity: 0;
+            z-index: 0;
         }
 
         @keyframes hearts {
@@ -123,11 +133,20 @@
     <script>
         function dodge() {
             const noBtn = document.getElementById('noBtn');
-            const x = Math.random() * (window.innerWidth - 100);
-            const y = Math.random() * (window.innerHeight - 100);
+            const btnGroup = document.querySelector('.btn-group');
+            const container = document.querySelector('.container');
             
-            noBtn.style.transform = `translate(${x - noBtn.offsetLeft}px, ${y - noBtn.offsetTop}px)`;
-            noBtn.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+            // Calculate boundaries
+            const maxX = container.offsetWidth - noBtn.offsetWidth;
+            const maxY = container.offsetHeight - noBtn.offsetHeight;
+            
+            // Generate new position within container bounds
+            const newX = Math.random() * maxX;
+            const newY = Math.random() * maxY;
+            
+            // Apply new position
+            noBtn.style.transform = `translate(${newX}px, ${newY}px)`;
+            noBtn.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
         }
 
         function showLove() {
@@ -150,14 +169,18 @@
             }
         }
 
-        // Web3 particles background
+        // Initialize particles
         const canvas = document.createElement('canvas');
         document.getElementById('particles').appendChild(canvas);
         const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
         
-        // Add particle animation here (complex implementation would require additional code)
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
     </script>
 </body>
 </html> 
